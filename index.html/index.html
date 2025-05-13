@@ -49,12 +49,9 @@
       background-color: #a52a2a;
     }
   </style>
-
-  <!-- Carga jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-
  <div style="text-align: center;">
 <img src="Logo Crisol.png" alt="Logo Crisol" style="max-width: 120px; margin-bottom: 10px;">
 <h2 id="tituloFormulario">FORMULARIO DE PEDIDO - CRISOL</h2>
@@ -107,7 +104,8 @@
     <button type="submit">Guardar Pedido</button>
   </form>
 
-  <div id="historial"></div>
+   <div id="historial"></div>
+  </div>
 
   <script>
     const productos = [
@@ -146,7 +144,7 @@
       option.textContent = `${p.nombre} - $${p.precio}`;
       productoSelect.appendChild(option);
     });
-
+    
     function mostrarHistorial() {
       const historial = JSON.parse(localStorage.getItem("historial")) || [];
       const historialDiv = document.getElementById("historial");
@@ -199,22 +197,9 @@ const fechaFormateada = `${dia}-${mesNombre}-${año}`;
       const telefono = document.getElementById("telefono").value;
       const vendedor = document.getElementById("vendedor").value;
       const observaciones = document.getElementById("observaciones").value;
-
-      const nuevoPedido = {
-        fecha,
-        hora,
-        producto,
-        dedicatoria,
-        decoracion,
-        nombre,
-        local,
-        boleta,
-        telefono,
-        vendedor,
-        observaciones,
       };
 
-      guardarHistorial(nuevoPedido);
+      guardarHistorial(Pedido);
 
       const historial = JSON.parse(localStorage.getItem("historial")) || [];
       const numeroPedido = historial.length + 1;
@@ -248,11 +233,131 @@ const anchoMaximo = 180;
       alert("✅ ¡Pedido guardado y PDF descargado correctamente!");
     });
 
-    // Mostrar historial al cargar
     mostrarHistorial();
+import React, { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Download, Search } from "lucide-react";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
+export default function PedidoHistorial() {
+  const [historial, setHistorial] = useState([]);
+  const [filtroFecha, setFiltroFecha] = useState("");
+  const [filtroLocal, setFiltroLocal] = useState("");
 
-  </script>
-</body>
-</html>
+  useEffect(() => {
+    const pedidosGuardados = JSON.parse(localStorage.getItem("pedidos")) || [];
+    setHistorial(pedidosGuardados);
+  }, []);
+
+  const exportarExcel = () => {
+    const datosFiltrados = historial.filter((pedido) => {
+      const coincideFecha = filtroFecha ? pedido.fecha === filtroFecha : true;
+      const coincideLocal = filtroLocal ? pedido.local.includes(filtroLocal) : true;
+      return coincideFecha && coincideLocal;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(datosFiltrados);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Historial");
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(data, "historial_pedidos.xlsx");
+  };
+
+  const cambiarEstado = (id, nuevoEstado) => {
+    const actualizado = historial.map((pedido) =>
+      pedido.id === id ? { ...pedido, estado: nuevoEstado } : pedido
+    );
+    setHistorial(actualizado);
+    localStorage.setItem("pedidos", JSON.stringify(actualizado));
+  };
+
+  const historialFiltrado = historial.filter((pedido) => {
+    const coincideFecha = filtroFecha ? pedido.fecha === filtroFecha : true;
+    const coincideLocal = filtroLocal ? pedido.local.includes(filtroLocal) : true;
+    return coincideFecha && coincideLocal;
+  });
+
+  return (
+    <Card className="p-4 mt-4">
+      <CardContent>
+        <h2 className="text-xl font-bold mb-4">Historial de Pedidos</h2>
+        <div className="flex flex-wrap gap-2 mb-4">
+          <Input
+            type="date"
+            value={filtroFecha}
+            onChange={(e) => setFiltroFecha(e.target.value)}
+            className="w-full sm:w-auto"
+          />
+          <Input
+            type="text"
+            placeholder="Filtrar por local"
+            value={filtroLocal}
+            onChange={(e) => setFiltroLocal(e.target.value)}
+            className="w-full sm:w-auto"
+          />
+          <Button onClick={exportarExcel} className="flex items-center gap-2">
+            <Download className="w-4 h-4" /> Exportar
+          </Button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full border text-sm text-left">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border px-4 py-2">Fecha</th>
+                <th className="border px-4 py-2">Local</th>
+                <th className="border px-4 py-2">Cliente</th>
+                <th className="border px-4 py-2">Teléfono</th>
+                <th className="border px-4 py-2">Productos</th>
+                <th className="border px-4 py-2">Estado</th>
+                <th className="border px-4 py-2">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {historialFiltrado.map((pedido, index) => (
+                <tr key={index} className="hover:bg-gray-50">
+                  <td className="border px-4 py-2">{pedido.fecha}</td>
+                  <td className="border px-4 py-2">{pedido.local}</td>
+                  <td className="border px-4 py-2">{pedido.cliente}</td>
+                  <td className="border px-4 py-2">{pedido.telefono}</td>
+                  <td className="border px-4 py-2">
+                    {pedido.productos.map((prod, i) => (
+                      <div key={i}>{prod.nombre} ({prod.cantidad})</div>
+                    ))}
+                  </td>
+                  <td className="border px-4 py-2 font-semibold">
+                    {pedido.estado || "Pendiente"}
+                  </td>
+                  <td className="border px-4 py-2 space-x-2">
+                    {pedido.estado !== "Producción" && pedido.estado !== "Despachado" && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => cambiarEstado(pedido.id, "Producción")}
+                      >
+                        A Producción
+                      </Button>
+                    )}
+                    {pedido.estado === "Producción" && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => cambiarEstado(pedido.id, "Despachado")}
+                      >
+                        A Despachado
+                      </Button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
