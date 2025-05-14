@@ -155,12 +155,13 @@
     ];
 
     const selectProducto = document.getElementById("producto");
-    productos.forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = `${p.codigo} - ${p.nombre} - $${p.precio}`;
-      opt.textContent = `${p.nombre} - $${p.precio}`;
-      selectProducto.appendChild(opt);
-    });
+ productos.forEach(p => {
+  const opt = document.createElement("option");
+  opt.value = `${p.nombre}`;
+  opt.textContent = `${p.nombre} - $${p.precio}`;
+  selectProducto.appendChild(opt);
+});
+
 
     document.getElementById("pedidoForm").addEventListener("submit", function(e) {
       e.preventDefault();
