@@ -82,7 +82,7 @@
       <option value="NOGUEIRA">NOGUEIRA</option>
       <option value="STA MARIA">STA MARIA</option>
       <option value="FABRICA">FABRICA</option>
-    </select
+   </select>
    <label for="producto">Producto:</label>
 <select id="producto" name="producto" required></select>
     <label for="dedicatoria">Dedicatoria:</label>
@@ -155,14 +155,6 @@
     ];
 
     const selectProducto = document.getElementById("producto");
-    
- productos.forEach(p => {
-  const opt = document.createElement("option");
-  opt.value = `${p.nombre}`;
-  opt.textContent = `${p.nombre} - $${p.precio}`;
-  selectProducto.appendChild(opt);
-});
-
 
     document.getElementById("pedidoForm").addEventListener("submit", function(e) {
       e.preventDefault();
@@ -202,9 +194,9 @@ const dia = fechaObj.getDate().toString().padStart(2, '0');
 const mesNombre = meses[fechaObj.getMonth()];
 const año = fechaObj.getFullYear();
 
-const fechaFormateada = ${dia}-${mesNombre}-${año};
+const fechaFormateada = `${dia}-${mesNombre}-${año}`;
 
-          doc.setFont("helvetica", "bold");
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(40)
 
 const margenIzquierdo = 10;
@@ -217,7 +209,7 @@ const anchoMaximo = 180;
 
 
       doc.text(${fechaFormateada}-${hora}, 10, 30,{ maxWidth: anchoMaximo }); 
-      doc.text(${local}-#${numeroPedido}, 10, 45);
+      doc.text(`${local}-#${pedido.id}`, 10, 45);
       doc.text(productoDividido, 10, 65, { maxWidth: anchoMaximo }); 
       doc.text(Motivo: ${dedicatoria}, 10, 120, { maxWidth: anchoMaximo });
       doc.text(decoracionDividido, 10, 150, { maxWidth: anchoMaximo });
@@ -282,6 +274,13 @@ const anchoMaximo = 180;
     document.getElementById("filtroLocal").addEventListener("input", mostrarPedidos);
 
     mostrarPedidos();
+    productos.forEach(p => {
+  const opt = document.createElement("option");
+  opt.value = `${p.nombre}`;
+  opt.textContent = `${p.nombre} - $${p.precio}`;
+  selectProducto.appendChild(opt);
+});
+
   </script>
 </body>
 </html>
