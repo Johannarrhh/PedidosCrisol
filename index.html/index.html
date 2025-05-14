@@ -125,7 +125,7 @@
   </table>
 
   <script>
-    const productos = [
+    const producto = [
       { codigo: "2120", nombre: "3 LECHES 20P", precio: 18000 },
       { codigo: "2118", nombre: "AMAPOLA 20P", precio: 20000 },
       { codigo: "2010", nombre: "AMOR 20P", precio: 28000 },
@@ -156,7 +156,7 @@
 
     const selectProducto = document.getElementById("producto");
 
-    productos.forEach(p => {
+    producto.forEach(p => {
       const opt = document.createElement("option");
       opt.value = p.nombre;
       opt.textContent = `${p.nombre} - $${p.precio}`;
