@@ -143,6 +143,72 @@
       option.textContent = ${p.nombre} - $${p.precio};
       productoSelect.appendChild(option);
     });
+        const ejemploPedidos = [
+      { id: 1, fecha: "2025-05-13", local: "Sucursal A", producto: "Torta", cantidad: 2, estado: "Pendiente" },
+      { id: 2, fecha: "2025-05-12", local: "Sucursal B", producto: "Pan de Pascua", cantidad: 5, estado: "Producción" }
+    ];
+
+    if (!localStorage.getItem("historialPedidos")) {
+      localStorage.setItem("historialPedidos", JSON.stringify(ejemploPedidos));
+    }
+
+    const filtroFecha = document.getElementById("filtroFecha");
+    const filtroLocal = document.getElementById("filtroLocal");
+    filtroFecha.addEventListener("input", mostrarPedidos);
+    filtroLocal.addEventListener("input", mostrarPedidos);
+
+    function mostrarPedidos() {
+      const pedidos = JSON.parse(localStorage.getItem("historialPedidos") || "[]");
+      const tbody = document.getElementById("cuerpoTabla");
+      tbody.innerHTML = "";
+
+      const filtrados = pedidos.filter(p => {
+        return (!filtroFecha.value || p.fecha === filtroFecha.value) &&
+               (!filtroLocal.value || p.local.toLowerCase().includes(filtroLocal.value.toLowerCase()));
+      });
+
+      filtrados.forEach(p => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${p.id}</td>
+          <td>${p.fecha}</td>
+          <td>${p.local}</td>
+          <td>${p.producto}</td>
+          <td>${p.cantidad}</td>
+          <td>${p.estado}</td>
+          <td>
+            ${p.estado !== "Despachado" ? `<button onclick="cambiarEstado(${p.id})">
+              ${p.estado === "Pendiente" ? "Pasar a Producción" : "Pasar a Despachado"}
+            </button>` : ""}
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function cambiarEstado(id) {
+      const pedidos = JSON.parse(localStorage.getItem("historialPedidos") || "[]");
+      const actualizado = pedidos.map(p => {
+        if (p.id === id) {
+          p.estado = p.estado === "Pendiente" ? "Producción" :
+                     p.estado === "Producción" ? "Despachado" : p.estado;
+        }
+        return p;
+      });
+      localStorage.setItem("historialPedidos", JSON.stringify(actualizado));
+      mostrarPedidos();
+    }
+
+    function exportarExcel() {
+      const pedidos = JSON.parse(localStorage.getItem("historialPedidos") || "[]");
+      const worksheet = XLSX.utils.json_to_sheet(pedidos);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
+      XLSX.writeFile(workbook, "historial_pedidos.xlsx");
+    }
+ mostrarPedidos();
 
     function mostrarHistorial() {
       const historial = JSON.parse(localStorage.getItem("historial")) || [];
@@ -247,72 +313,7 @@ const anchoMaximo = 180;
     
     mostrarHistorial();
  
-    const ejemploPedidos = [
-      { id: 1, fecha: "2025-05-13", local: "Sucursal A", producto: "Torta", cantidad: 2, estado: "Pendiente" },
-      { id: 2, fecha: "2025-05-12", local: "Sucursal B", producto: "Pan de Pascua", cantidad: 5, estado: "Producción" }
-    ];
 
-    if (!localStorage.getItem("historialPedidos")) {
-      localStorage.setItem("historialPedidos", JSON.stringify(ejemploPedidos));
-    }
-
-    const filtroFecha = document.getElementById("filtroFecha");
-    const filtroLocal = document.getElementById("filtroLocal");
-    filtroFecha.addEventListener("input", mostrarPedidos);
-    filtroLocal.addEventListener("input", mostrarPedidos);
-
-    function mostrarPedidos() {
-      const pedidos = JSON.parse(localStorage.getItem("historialPedidos") || "[]");
-      const tbody = document.getElementById("cuerpoTabla");
-      tbody.innerHTML = "";
-
-      const filtrados = pedidos.filter(p => {
-        return (!filtroFecha.value || p.fecha === filtroFecha.value) &&
-               (!filtroLocal.value || p.local.toLowerCase().includes(filtroLocal.value.toLowerCase()));
-      });
-
-      filtrados.forEach(p => {
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-          <td>${p.id}</td>
-          <td>${p.fecha}</td>
-          <td>${p.local}</td>
-          <td>${p.producto}</td>
-          <td>${p.cantidad}</td>
-          <td>${p.estado}</td>
-          <td>
-            ${p.estado !== "Despachado" ? `<button onclick="cambiarEstado(${p.id})">
-              ${p.estado === "Pendiente" ? "Pasar a Producción" : "Pasar a Despachado"}
-            </button>` : ""}
-          </td>
-        `;
-
-        tbody.appendChild(tr);
-      });
-    }
-
-    function cambiarEstado(id) {
-      const pedidos = JSON.parse(localStorage.getItem("historialPedidos") || "[]");
-      const actualizado = pedidos.map(p => {
-        if (p.id === id) {
-          p.estado = p.estado === "Pendiente" ? "Producción" :
-                     p.estado === "Producción" ? "Despachado" : p.estado;
-        }
-        return p;
-      });
-      localStorage.setItem("historialPedidos", JSON.stringify(actualizado));
-      mostrarPedidos();
-    }
-
-    function exportarExcel() {
-      const pedidos = JSON.parse(localStorage.getItem("historialPedidos") || "[]");
-      const worksheet = XLSX.utils.json_to_sheet(pedidos);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
-      XLSX.writeFile(workbook, "historial_pedidos.xlsx");
-    }
- mostrarPedidos();
   </script>
 </body>
 </html>
