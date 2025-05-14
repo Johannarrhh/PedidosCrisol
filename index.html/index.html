@@ -49,12 +49,9 @@
       background-color: #a52a2a;
     }
   </style>
-
-  <!-- Carga jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-
  <div style="text-align: center;">
 <img src="Logo Crisol.png" alt="Logo Crisol" style="max-width: 120px; margin-bottom: 10px;">
 <h2 id="tituloFormulario">FORMULARIO DE PEDIDO - CRISOL</h2>
@@ -249,29 +246,6 @@ const anchoMaximo = 180;
     });
     mostrarHistorial();
  
-<body>
-  <h1>Historial de Pedidos</h1>
-
-  <label>Filtrar por fecha: <input type="date" id="filtroFecha" /></label>
-  <label>Filtrar por local: <input type="text" id="filtroLocal" placeholder="Ej: Santiago" /></label>
-  <button onclick="exportarExcel()">Exportar a Excel</button>
-
-  <table id="tablaPedidos">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Fecha</th>
-        <th>Local</th>
-        <th>Producto</th>
-        <th>Cantidad</th>
-        <th>Estado</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody id="cuerpoTabla"></tbody>
-  </table>
-
-  <script>
     const ejemploPedidos = [
       { id: 1, fecha: "2025-05-13", local: "Sucursal A", producto: "Torta", cantidad: 2, estado: "Pendiente" },
       { id: 2, fecha: "2025-05-12", local: "Sucursal B", producto: "Pan de Pascua", cantidad: 5, estado: "Producción" }
