@@ -63,6 +63,8 @@
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
 </head>
 <body>
   <div style="text-align: center;">
@@ -154,8 +156,20 @@
       { codigo: "2115", nombre: "TRUFA 20P", precio: 24000 },
       { codigo: "2035", nombre: "YOGURTH 20P", precio: 16000 }
     ];
+  function descargarPDF() {
+    const elemento = document.getElementById("historialPedidos"); // ID de tu tabla o div
 
-    const selectProducto = document.getElementById("producto");
+    const opciones = {
+      margin:       0.5,
+      filename:     'historial_pedidos.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().from(elemento).set(opciones).save();
+  }
+const selectProducto = document.getElementById("producto");
 
   producto.forEach(p => {
       const opt = document.createElement("option");
@@ -195,7 +209,7 @@
  function generarPDF(pedido) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-
+  <button onclick="descargarPDF()">Descargar PDF</button>
   const fechaInput = pedido.fecha;
   const fechaObj = new Date(fechaInput);
   const meses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
