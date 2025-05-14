@@ -212,6 +212,258 @@ const fechaFormateada = ${dia}-${mesNombre}-${año};
       };
 
       guardarHistorial(nuevoPedido);
+      <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FORMULARIO DE PEDIDO - CRISOL</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      background-color: #fef6f2;
+    }
+
+    h2 {
+      text-align: center;
+      color: #800000;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #800000;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #a52a2a;
+    }
+  </style>
+
+  <!-- Carga jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+ <div style="text-align: center;">
+<img src="Logo Crisol.png" alt="Logo Crisol" style="max-width: 120px; margin-bottom: 10px;">
+<h2 id="tituloFormulario">FORMULARIO DE PEDIDO - CRISOL</h2>
+
+  <form id="pedidoForm">
+    <label for="fecha">Fecha de retiro:</label>
+    <input type="date" id="fecha" name="fecha" required>
+
+    <label for="hora">Hora de retiro:</label>
+    <input type="time" id="hora" name="hora" required>
+
+    <label for="local">Local:</label>
+    <select id="local" name="local" required>
+      <option value="">Selecciona un local</option>
+      <option value="MOLINA">MOLINA</option>
+      <option value="NOGUEIRA">NOGUEIRA</option>
+      <option value="STA MARIA">STA MARIA</option>
+      <option value="FABRICA">FABRICA</option>
+    </select>
+
+    <label for="producto">Producto:</label>
+    <select id="producto" name="producto" required>
+      <option value="">Selecciona un producto</option>
+    </select>
+
+    <label for="dedicatoria">Dedicatoria:</label>
+    <input type="text" id="dedicatoria" name="dedicatoria" required>
+
+    <label for="decoracion">Decoración:</label>
+    <input type="text" id="decoracion" name="decoracion" required>
+
+    <label for="boleta">Número de boleta:</label>
+    <input type="text" id="boleta" name="boleta" required>
+
+    <label for="fotoBoleta">Foto de boleta:</label>
+    <input type="file" id="fotoBoleta" name="fotoBoleta" accept="image/*" required>
+
+    <label for="nombre">Nombre del cliente:</label>
+    <input type="text" id="nombre" name="nombre" required>
+
+    <label for="telefono">Teléfono del cliente:</label>
+    <input type="tel" id="telefono" name="telefono" required>
+
+    <label for="vendedor">Vendedor(a):</label>
+    <input type="text" id="vendedor" name="vendedor" required>
+
+    <label for="observaciones">Observaciones:</label>
+    <textarea id="observaciones" name="observaciones" rows="3" placeholder="(Opcional)"></textarea>
+
+    <button type="submit">Guardar Pedido</button>
+  </form>
+
+  <div id="historial"></div>
+
+  <script>
+    const productos = [
+      { codigo: "2120", nombre: "3 LECHES 20P", precio: 18000 },
+      { codigo: "2118", nombre: "AMAPOLA 20P", precio: 20000 },
+      { codigo: "2010", nombre: "AMOR 20P", precio: 28000 },
+      { codigo: "2008", nombre: "BISCOCHO PURE LUCUMA 20P", precio: 20000 },
+      { codigo: "2015", nombre: "CHOCOLATE 20P", precio: 20000 },
+      { codigo: "2017", nombre: "CHOCOLATE GUINDA ACIDA 20P", precio: 21000 },
+      { codigo: "1046", nombre: "DISCO MERENGUE 20P", precio: 2000 },
+      { codigo: "2016", nombre: "DURAZNO CHANTILLY 20P", precio: 20000 },
+      { codigo: "2024", nombre: "FRAMBUESA NATURAL 0% AZUCAR 20P", precio: 21000 },
+      { codigo: "2116", nombre: "FRAMBUESA NATURAL 20P", precio: 21000 },
+      { codigo: "2006", nombre: "HELADA MERENGUE FRAMBUESA 20P", precio: 24000 },
+      { codigo: "2066", nombre: "IMPERIAL BISCOCHO BLANCO 20P", precio: 21000 },
+      { codigo: "2014", nombre: "MANJAR NUEZ 20P", precio: 21000 },
+      { codigo: "2011", nombre: "MANJAR PLATANO 20P", precio: 18000 },
+      { codigo: "2036", nombre: "MARGARITA 20P", precio: 26000 },
+      { codigo: "2003", nombre: "MIL HOJAS 20P", precio: 26000 },
+      { codigo: "2009", nombre: "MOKA 20P", precio: 18000 },
+      { codigo: "1452", nombre: "MOROCHA 20P", precio: 18000 },
+      { codigo: "2039", nombre: "MUSELINA 20P", precio: 18000 },
+      { codigo: "2018", nombre: "PANQUEQUE CASTAÑA 20P", precio: 25000 },
+      { codigo: "2005", nombre: "PANQUEQUE NARANJA 20P", precio: 24000 },
+      { codigo: "2001", nombre: "PIÑA 20P", precio: 21000 },
+      { codigo: "2044", nombre: "SACHER 20P", precio: 28000 },
+      { codigo: "2002", nombre: "SELVA NEGRA 20P", precio: 25000 },
+      { codigo: "2115", nombre: "TRUFA 20P", precio: 24000 },
+      { codigo: "2035", nombre: "YOGURTH 20P", precio: 16000 },
+    ];
+
+    const productoSelect = document.getElementById("producto");
+    productos.forEach(p => {
+      const option = document.createElement("option");
+      option.value = ${p.codigo} - ${p.nombre} - $${p.precio};
+      option.textContent = ${p.nombre} - $${p.precio};
+      productoSelect.appendChild(option);
+    });
+
+    function mostrarHistorial() {
+      const historial = JSON.parse(localStorage.getItem("historial")) || [];
+      const historialDiv = document.getElementById("historial");
+      historialDiv.innerHTML = "<h3>Historial de Pedidos</h3>";
+      historial.forEach((pedido, index) => {
+        const pedidoDiv = document.createElement("div");
+        pedidoDiv.classList.add("pedido");
+        pedidoDiv.innerHTML = 
+          <p><strong>Pedido #${index + 1}</strong></p>
+          <p><strong>Fecha:</strong> ${pedido.fecha}</p>
+          <p><strong>Hora:</strong> ${pedido.hora}</p>
+          <p><strong>Producto:</strong> ${pedido.producto}</p>
+          <p><strong>Nombre:</strong> ${pedido.nombre}</p>
+          <p><strong>Vendedor:</strong> ${pedido.vendedor}</p>
+          <p><strong>Observaciones:</strong> ${pedido.observaciones || "Ninguna"}</p>
+          <hr>
+        ;
+        historialDiv.appendChild(pedidoDiv);
+      });
+    }
+
+    function guardarHistorial(pedido) {
+      const historial = JSON.parse(localStorage.getItem("historial")) || [];
+      historial.push(pedido);
+      localStorage.setItem("historial", JSON.stringify(historial));
+      mostrarHistorial();
+    }
+
+    document.getElementById("pedidoForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+const fechaInput = document.getElementById("fecha").value; 
+const fechaObj = new Date(fechaInput);
+const meses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
+
+const dia = fechaObj.getDate().toString().padStart(2, '0');
+const mesNombre = meses[fechaObj.getMonth()];
+const año = fechaObj.getFullYear();
+
+const fechaFormateada = ${dia}-${mesNombre}-${año};
+
+
+      const hora = document.getElementById("hora").value;
+      const local = document.getElementById("local").value;
+      const producto = document.getElementById("producto").value;
+      const dedicatoria = document.getElementById("dedicatoria").value;
+      const decoracion = document.getElementById("decoracion").value;
+      const boleta = document.getElementById("boleta").value;
+      const nombre = document.getElementById("nombre").value;
+      const telefono = document.getElementById("telefono").value;
+      const vendedor = document.getElementById("vendedor").value;
+      const observaciones = document.getElementById("observaciones").value;
+
+      const nuevoPedido = {
+        fecha,
+        hora,
+        producto,
+        dedicatoria,
+        decoracion,
+        nombre,
+        local,
+        boleta,
+        telefono,
+        vendedor,
+        observaciones,
+      };
+
+      guardarHistorial(nuevoPedido);
+
+      const historial = JSON.parse(localStorage.getItem("historial")) || [];
+      const numeroPedido = historial.length + 1;
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+     
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(40)
+
+const margenIzquierdo = 10;
+const anchoMaximo = 180;
+
+     const productoDividido = doc.splitTextToSize(${producto}, 180);
+     const decoracionDividido = doc.splitTextToSize(Decoración: ${decoracion}, 180);
+     const observacionesDividido = doc.splitTextToSize(Observación: ${observaciones || "Ninguna"}, 180);
+     const nombreDividido = doc.splitTextToSize(Nombre: ${nombre}, 180);
+
+
+      doc.text(${fechaFormateada}-${hora}, 10, 30,{ maxWidth: anchoMaximo }); 
+      doc.text(${local}-#${numeroPedido}, 10, 45);
+      doc.text(productoDividido, 10, 65, { maxWidth: anchoMaximo }); 
+      doc.text(Motivo: ${dedicatoria}, 10, 120, { maxWidth: anchoMaximo });
+      doc.text(decoracionDividido, 10, 150, { maxWidth: anchoMaximo });
+      doc.text(nombreDividido, 10, 190, { maxWidth: anchoMaximo });
+      doc.text(Teléfono: ${telefono}, 10, 220);
+      doc.text(N° Boleta: ${boleta}, 10, 235);
+      doc.text(Vendedor(a): ${vendedor}, 10, 250);
+      doc.text(observacionesDividido, 10, 265, { maxWidth: anchoMaximo });
+      doc.save(${nombre.trim().replaceAll(" ", "_")}_pedido.pdf);
+
+      alert("✅ ¡Pedido guardado y PDF descargado correctamente!");
+    });
+
+    // Mostrar historial al cargar
+    mostrarHistorial();
 
       const historial = JSON.parse(localStorage.getItem("historial")) || [];
       const numeroPedido = historial.length + 1;
@@ -311,8 +563,7 @@ const anchoMaximo = 180;
       XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
       XLSX.writeFile(workbook, "historial_pedidos.xlsx");
     }
-
-    mostrarPedidos();
+ mostrarPedidos();
   </script>
 </body>
 </html>
