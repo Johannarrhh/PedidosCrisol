@@ -124,8 +124,9 @@
     <tbody id="tablaPedidos"></tbody>
   </table>
 
-  <script>
-    const producto = [
+ <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const productos = [
       { codigo: "2120", nombre: "3 LECHES 20P", precio: 18000 },
       { codigo: "2118", nombre: "AMAPOLA 20P", precio: 20000 },
       { codigo: "2010", nombre: "AMOR 20P", precio: 28000 },
@@ -162,6 +163,8 @@
       opt.textContent = `${p.nombre} - $${p.precio}`;
       selectProducto.appendChild(opt);
     });
+  });
+</script>:contentReference[oaicite:32]{index=32}
 
     document.getElementById("pedidoForm").addEventListener("submit", function(e) {
       e.preventDefault();
