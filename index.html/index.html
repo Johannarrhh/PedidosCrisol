@@ -157,7 +157,8 @@
 
     const selectProducto = document.getElementById("producto");
 
-    producto.forEach(p => {
+   doc.text(`Producto: ${pedido.producto}`, x, y);
+{
       const opt = document.createElement("option");
       opt.value = p.nombre;
       opt.textContent = `${p.nombre} - $${p.precio}`;
