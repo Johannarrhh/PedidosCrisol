@@ -66,12 +66,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 </head>
-<body>
+<body> 
+  <div id="loginContainer">
+  <h2>Acceso a Pedidos Crisol</h2>
+  <input type="password" id="claveAcceso" placeholder="Ingrese la contraseña" />
+  <button onclick="verificarClave()">Ingresar</button>
+  </div>
   <div style="text-align: center;">
     <img src="Logo Crisol.png" alt="Logo Crisol" style="max-width: 120px; margin-bottom: 10px;">
   </div>
   <h2>PEDIDOS - CRISOL</h2>
-
+<div id="contenido" style="display: none;">
   <form id="pedidoForm">
     <label for="fecha">Fecha de retiro:</label>
     <input type="date" id="fecha" required>
@@ -230,8 +235,20 @@
         tbody.innerHTML = "";
         const filtroFecha = document.getElementById("filtroFecha").value;
         const filtroLocal = document.getElementById("filtroLocal").value.toLowerCase();
+          }
+  function verificarClave() {
+    const clave = document.getElementById("claveAcceso").value;
+    const claveCorrecta = "crisolsuper";
+      }
+      // Puedes cambiarla por la clave que tú elijas
 
-        pedidos.filter(p =>
+    if (clave === claveCorrecta) {
+      document.getElementById("loginContainer").style.display = "none";
+      document.getElementById("contenido").style.display = "block";
+    } else {
+      alert("❌ Contraseña incorrecta. Intenta nuevamente.");
+    }
+  pedidos.filter(p =>
           (!filtroFecha || p.fecha === filtroFecha) &&
           (!filtroLocal || p.local.toLowerCase().includes(filtroLocal))
         ).forEach(p => {
