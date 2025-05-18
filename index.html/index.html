@@ -227,6 +227,7 @@ productos.forEach(p => {
     doc.text(doc.splitTextToSize(Observación: ${pedido.observaciones || "Ninguna"}, maxAncho), margen, 265);
     doc.save(${pedido.nombre.trim().replaceAll(" ", "_")}_pedido.pdf);
   }
+    }
 
   function mostrarPedidos() {
     const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
