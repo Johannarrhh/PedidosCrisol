@@ -4,6 +4,37 @@ body {
   margin: 0;
   padding: 0;
 }
+loginContainer {
+  text-align: center;
+  background-color: #fff2ef;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #ccc;
+  max-width: 400px;
+  margin: auto;
+  margin-top: 80px;
+}
+loginContainer input {
+  padding: 10px;
+  width: 80%;
+  margin-top: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+loginContainer button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #800000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+loginContainer button:hover {
+  background-color: #a52a2a;
+}
+
 
 .container {
   width: 90%;
