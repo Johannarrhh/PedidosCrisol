@@ -239,44 +239,43 @@
       };
 
       // Generar PDF con jsPDF
-      function generarPDF(pedido) {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+function generarPDF(pedido) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-        const meses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
-        const fechaObj = new Date(pedido.fecha);
-        const dia = fechaObj.getDate().toString().padStart(2,'0');
-        const mes = meses[fechaObj.getMonth()];
-        const año = fechaObj.getFullYear();
-        const fechaFormateada = `${dia}-${mes}-${año}`;
+  const meses = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
+  const fechaObj = new Date(pedido.fecha);
+  const dia = fechaObj.getDate().toString().padStart(2,'0');
+  const mes = meses[fechaObj.getMonth()];
+  const año = fechaObj.getFullYear();
+  const fechaFormateada = `${dia}-${mes}-${año}`;
 
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(40);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(40);
 
-        const margenIzquierdo = 10;
-        const anchoMaximo = 180;
+  const margenIzquierdo = 10;
+  const anchoMaximo = 180;
 
-        const productoDividido = doc.splitTextToSize(`Producto: ${pedido.producto}`, anchoMaximo);
-        const decoracionDividido = doc.splitTextToSize(`Decoración: ${pedido.decoracion}`, anchoMaximo);
-        const observacionesDividido = doc.splitTextToSize(`Observación: ${pedido.observaciones || "Ninguna"}`, anchoMaximo);
-const nombreDividido = doc.splitTextToSize(`Nombre: ${pedido.nombre}`, anchoMaximo);
+  const productoDividido = doc.splitTextToSize(`Producto: ${pedido.producto}`, anchoMaximo);
+  const decoracionDividido = doc.splitTextToSize(`Decoración: ${pedido.decoracion}`, anchoMaximo);
+  const observacionesDividido = doc.splitTextToSize(`Observación: ${pedido.observaciones || "Ninguna"}`, anchoMaximo);
+  const nombreDividido = doc.splitTextToSize(`Nombre: ${pedido.nombre}`, anchoMaximo);
 
-            doc.text(`${fechaFormateada} - ${pedido.hora}`, margenIzquierdo, 30);
-    doc.text(`${pedido.local} - #${pedido.id}`, margenIzquierdo, 45);
-    doc.text(productoDividido, margenIzquierdo, 65);
-    doc.text(`Motivo: ${pedido.dedicatoria}`, margenIzquierdo, 120);
-    doc.text(decoracionDividido, margenIzquierdo, 150);
-    doc.text(nombreDividido, margenIzquierdo, 190);
-    doc.text(`Teléfono: ${pedido.telefono}`, margenIzquierdo, 220);
-    doc.text(`N° Boleta: ${pedido.boleta}`, margenIzquierdo, 235);
-    doc.text(`Vendedor(a): ${pedido.vendedor}`, margenIzquierdo, 250);
-    doc.text(observacionesDividido, margenIzquierdo, 265);
+  doc.text(`${fechaFormateada} - ${pedido.hora}`, margenIzquierdo, 30);
+  doc.text(`${pedido.local} - #${pedido.id}`, margenIzquierdo, 45);
+  doc.text(productoDividido, margenIzquierdo, 65);
+  doc.text(`Motivo: ${pedido.dedicatoria}`, margenIzquierdo, 120);
+  doc.text(decoracionDividido, margenIzquierdo, 150);
+  doc.text(nombreDividido, margenIzquierdo, 190);
+  doc.text(`Teléfono: ${pedido.telefono}`, margenIzquierdo, 220);
+  doc.text(`N° Boleta: ${pedido.boleta}`, margenIzquierdo, 235);
+  doc.text(`Vendedor(a): ${pedido.vendedor}`, margenIzquierdo, 250);
+  doc.text(observacionesDividido, margenIzquierdo, 265);
 
-    const nombreArchivo = pedido.nombre.trim().replaceAll(" ", "_");
-    doc.save(`${nombreArchivo}_pedido.pdf`);
-  }
-
-  // Exportar Excel con XLSX
+  const nombreArchivo = pedido.nombre.trim().replaceAll(" ", "_");
+  doc.save(`${nombreArchivo}_pedido.pdf`);
+}
+// Exportar Excel con XLSX
   window.exportarExcel = function() {
     let pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
     if(pedidos.length === 0){
