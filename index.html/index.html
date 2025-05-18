@@ -73,8 +73,26 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
-<body>
-  <div style="text-align: center;">
+<body> 
+ <div id="app" style="display: none;">
+  <div style="text-align: center;"> 
+ <div id="login-section">
+  <h2>Iniciar sesión</h2>
+  <form id="login-form">
+    <label for="local">Local:</label>
+    <select id="local" required>
+      <option value="">Selecciona un local</option>
+      <option value="MOLINA">MOLINA</option>
+      <option value="NOGUEIRA">NOGUEIRA</option>
+       <option value="STA MARIA">STA MARIA</option>
+      <option value="FABRICA">FABRICA</option>
+    </select>
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" required />
+    <button type="submit">Ingresar</button>
+  </form>
+</div>
+
     <img src="Logo Crisol.png" alt="Logo Crisol" style="max-width: 120px; margin-bottom: 10px;" />
   </div>
   <h2>PEDIDOS - CRISOL</h2>
@@ -183,6 +201,29 @@
         option.textContent = `${nombre} - $${precio.toLocaleString("es-CL")}`;
         selectProducto.appendChild(option);
       });
+      const credencialesLocales = {
+  "MOLINA": "clave1",
+  "NOGUEIRA": "clave2",
+  "STA MARIA": "clave3",
+  "FABRICA": "admin123"
+};
+
+document.getElementById("login-form").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const local = document.getElementById("local").value;
+  const password = document.getElementById("password").value;
+
+  if (credencialesLocales[local] === password) {
+    localStorage.setItem("localLogueado", local);
+    document.getElementById("login-section").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    cargarPedidos(); // función que mostraría pedidos filtrados
+  } else {
+    alert("Contraseña incorrecta.");
+  }
+});
+
 
       // Mostrar pedidos con filtros
       function mostrarPedidos() {
@@ -211,7 +252,14 @@
             <td>${pedido.producto}</td>
             <td>${pedido.nombre}</td>
             <td>${pedido.estado}</td>
-            <td><button class="btn-cambiar-estado" data-id="${pedido.id}">Cambiar Estado</button></td>
+            <td>
+  <button class="btn-cambiar-estado" data-id="${pedido.id}">Cambiar Estado</button>
+  <button class="btn-descargar-pdf" data-id="${pedido.id}">PDF</button>
+  <button class="btn-eliminar" data-id="${pedido.id}">Eliminar</button>
+  <button onclick="cerrarSesion()">Cerrar sesión</button>
+
+</td>
+
           `;
           tabla.appendChild(tr);
         });
@@ -237,8 +285,12 @@
         localStorage.setItem("pedidos", JSON.stringify(pedidos));
         mostrarPedidos();
       };
+function cerrarSesion() {
+  localStorage.removeItem("localLogueado");
+  location.reload();
+} 
 
-      // Generar PDF con jsPDF
+// Generar PDF con jsPDF
 function generarPDF(pedido) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -338,5 +390,29 @@ function generarPDF(pedido) {
   document.getElementById("filtroLocal").addEventListener("input", mostrarPedidos);
 
   mostrarPedidos();
+      
 });
+    // Botón para descargar PDF por fila
+document.querySelectorAll(".btn-descargar-pdf").forEach(btn => {
+  btn.addEventListener("click", e => {
+    const id = Number(e.target.dataset.id);
+    const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
+    const pedido = pedidos.find(p => p.id === id);
+    if (pedido) generarPDF(pedido);
+  });
+});
+
+// Botón para eliminar pedido
+document.querySelectorAll(".btn-eliminar").forEach(btn => {
+  btn.addEventListener("click", e => {
+    const id = Number(e.target.dataset.id);
+    if (confirm("¿Estás segura de que deseas eliminar este pedido?")) {
+      let pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
+      pedidos = pedidos.filter(p => p.id !== id);
+      localStorage.setItem("pedidos", JSON.stringify(pedidos));
+      mostrarPedidos();
+    }
+  });
+});
+
 </script> </body> </html> ```
