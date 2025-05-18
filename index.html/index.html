@@ -71,7 +71,6 @@
   <h2>Acceso a Pedidos Crisol</h2>
   <input type="password" id="claveAcceso" placeholder="Ingrese la contraseña" />
   <button onclick="verificarClave()">Ingresar</button>
-</div>
 <div style="text-align: center;">
     <img src="Logo Crisol.png" alt="Logo Crisol" style="max-width: 120px; margin-bottom: 10px;">
   </div>
@@ -248,7 +247,6 @@
     } else {
       alert("❌ Contraseña incorrecta. Intenta nuevamente.");
     }
-        }
   pedidos.filter(p =>
           (!filtroFecha || p.fecha === filtroFecha) &&
           (!filtroLocal || p.local.toLowerCase().includes(filtroLocal))
