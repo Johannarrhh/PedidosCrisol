@@ -207,7 +207,6 @@ const selectProducto = document.getElementById("producto");
  function generarPDF(pedido) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  <button onclick="descargarPDF()">Descargar PDF</button>
   const fechaInput = pedido.fecha;
   const fechaObj = new Date(fechaInput);
   const meses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
@@ -305,5 +304,6 @@ const selectProducto = document.getElementById("producto");
 });
 
   </script>
+    <button onclick="descargarPDF()">Descargar PDF</button>
 </body>
 </html>
