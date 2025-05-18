@@ -250,24 +250,29 @@ document.querySelectorAll(".btn-cambiar-estado").forEach(btn => {
         const año = fechaObj.getFullYear();
         const fechaFormateada = `${dia}-${mes}-${año}`;
 
-            doc.setFontSize(16);
-    doc.text("PEDIDO CRISOL", 105, 15, null, null, "center");
-    doc.setFontSize(12);
-    doc.text(`ID Pedido: ${pedido.id}`, 14, 30);
-    doc.text(`Fecha Retiro: ${fechaFormateada}`, 14, 40);
-    doc.text(`Hora Retiro: ${pedido.hora}`, 14, 50);
-    doc.text(`Local: ${pedido.local}`, 14, 60);
-    doc.text(`Producto: ${pedido.producto}`, 14, 70);
-    doc.text(`Dedicatoria: ${pedido.dedicatoria}`, 14, 80);
-    doc.text(`Decoración: ${pedido.decoracion}`, 14, 90);
-    doc.text(`Boleta N°: ${pedido.boleta}`, 14, 100);
-    doc.text(`Cliente: ${pedido.nombre}`, 14, 110);
-    doc.text(`Teléfono: ${pedido.telefono}`, 14, 120);
-    doc.text(`Vendedor(a): ${pedido.vendedor}`, 14, 130);
-    doc.text(`Observaciones: ${pedido.observaciones || '-'}`, 14, 140);
-    doc.text(`Estado: ${pedido.estado}`, 14, 150);
+           doc.setFont("helvetica", "bold");
+  doc.setFontSize(40);
 
-    doc.save(`Pedido_Crisol_${pedido.id}.pdf`);
+  const margenIzquierdo = 10;
+  const anchoMaximo = 180;
+
+  const productoDividido = doc.splitTextToSize(`Producto: ${pedido.producto}`, anchoMaximo);
+  const decoracionDividido = doc.splitTextToSize(`Decoración: ${pedido.decoracion}`, anchoMaximo);
+  const observacionesDividido = doc.splitTextToSize(`Observación: ${pedido.observaciones || "Ninguna"}`, anchoMaximo);
+  const nombreDividido = doc.splitTextToSize(`Nombre: ${pedido.nombre}`, anchoMaximo);
+
+  doc.text(`${fechaFormateada} - ${pedido.hora}`, margenIzquierdo, 30);
+  doc.text(`${pedido.local} - #${pedido.id}`, margenIzquierdo, 45);
+  doc.text(productoDividido, margenIzquierdo, 65);
+  doc.text(`Motivo: ${pedido.dedicatoria}`, margenIzquierdo, 120);
+  doc.text(decoracionDividido, margenIzquierdo, 150);
+  doc.text(nombreDividido, margenIzquierdo, 190);
+  doc.text(`Teléfono: ${pedido.telefono}`, margenIzquierdo, 220);
+  doc.text(`N° Boleta: ${pedido.boleta}`, margenIzquierdo, 235);
+  doc.text(`Vendedor(a): ${pedido.vendedor}`, margenIzquierdo, 250);
+  doc.text(observacionesDividido, margenIzquierdo, 265);
+  doc.save(`${pedido.nombre.trim().replaceAll(" ", "_")}_pedido.pdf`);
+
   }
 
   // Guardar pedido desde el formulario
