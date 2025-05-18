@@ -234,8 +234,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const tbody = document.getElementById("tablaPedidos");
     tbody.innerHTML = "";
     const filtroFecha = document.getElementById("filtroFecha").value;
-    const filtroLocal = document.getElementById("filtroLocal").value.toLowerCase();
-
+   const filtroLocal = document.getElementById("filtroLocal").value.toLowerCase();
+}
     pedidos.filter(p =>
       (!filtroFecha || p.fecha === filtroFecha) &&
       (!filtroLocal || p.local.toLowerCase().includes(filtroLocal))
@@ -255,9 +255,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  function verificarClave() {
-    const clave = document.getElementById("claveAcceso").value;
-    const claveCorrecta = "crisol";
+ function verificarClave() {
+  const clave = document.getElementById("claveAcceso").value;
+  const claveCorrecta = "crisol";
+        }
     if (clave === claveCorrecta) {
       document.getElementById("loginContainer").style.display = "none";
       document.getElementById("contenido").style.display = "block";
