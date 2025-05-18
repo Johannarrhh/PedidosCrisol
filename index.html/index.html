@@ -166,13 +166,13 @@ document.addEventListener("DOMContentLoaded", function () {
     { codigo: "2035", nombre: "YOGURTH 20P", precio: 16000 },
   ];
 
-const selectProducto = document.getElementById("producto");
-productos.forEach(p => {
-  const opt = document.createElement("option");
-  opt.value = p.nombre;
-  opt.textContent = `${p.nombre} - $${p.precio}`;
-  selectProducto.appendChild(opt);
-});
+  const selectProducto = document.getElementById("producto");
+  productos.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p.nombre;
+    opt.textContent = `${p.nombre} - $${p.precio}`;
+    selectProducto.appendChild(opt);
+  });
 
   document.getElementById("pedidoForm").addEventListener("submit", function(e) {
     e.preventDefault();
@@ -208,40 +208,39 @@ productos.forEach(p => {
     const dia = fechaObj.getDate().toString().padStart(2, '0');
     const mes = meses[fechaObj.getMonth()];
     const año = fechaObj.getFullYear();
-    const fechaFormateada = ${dia}-${mes}-${año}`;
+    const fechaFormateada = `${dia}-${mes}-${año}`;
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(40);
     const margen = 10;
     const maxAncho = 180;
 
-    doc.text(${fechaFormateada} - ${pedido.hora}, margen, 30);
-    doc.text(${pedido.local} - #${pedido.id}, margen, 45);
-    doc.text(doc.splitTextToSize(Producto: ${pedido.producto}, maxAncho), margen, 65);
-    doc.text(Motivo: ${pedido.dedicatoria}, margen, 120);
-    doc.text(doc.splitTextToSize(Decoración: ${pedido.decoracion}, maxAncho), margen, 150);
-    doc.text(doc.splitTextToSize(Nombre: ${pedido.nombre}, maxAncho), margen, 190);
-    doc.text(Teléfono: ${pedido.telefono}, margen, 220);
-    doc.text(N° Boleta: ${pedido.boleta}, margen, 235);
-    doc.text(Vendedor(a): ${pedido.vendedor}, margen, 250);
-    doc.text(doc.splitTextToSize(Observación: ${pedido.observaciones || "Ninguna"}, maxAncho), margen, 265);
-    doc.save(${pedido.nombre.trim().replaceAll(" ", "_")}_pedido.pdf);
+    doc.text(`${fechaFormateada} - ${pedido.hora}`, margen, 30);
+    doc.text(`${pedido.local} - #${pedido.id}`, margen, 45);
+    doc.text(doc.splitTextToSize(`Producto: ${pedido.producto}`, maxAncho), margen, 65);
+    doc.text(`Motivo: ${pedido.dedicatoria}`, margen, 120);
+    doc.text(doc.splitTextToSize(`Decoración: ${pedido.decoracion}`, maxAncho), margen, 150);
+    doc.text(doc.splitTextToSize(`Nombre: ${pedido.nombre}`, maxAncho), margen, 190);
+    doc.text(`Teléfono: ${pedido.telefono}`, margen, 220);
+    doc.text(`N° Boleta: ${pedido.boleta}`, margen, 235);
+    doc.text(`Vendedor(a): ${pedido.vendedor}`, margen, 250);
+    doc.text(doc.splitTextToSize(`Observación: ${pedido.observaciones || "Ninguna"}`, maxAncho), margen, 265);
+    doc.save(`${pedido.nombre.trim().replaceAll(" ", "_")}_pedido.pdf`);
   }
-    }
 
   function mostrarPedidos() {
     const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
     const tbody = document.getElementById("tablaPedidos");
     tbody.innerHTML = "";
     const filtroFecha = document.getElementById("filtroFecha").value;
-   const filtroLocal = document.getElementById("filtroLocal").value.toLowerCase();
-}
+    const filtroLocal = document.getElementById("filtroLocal").value.toLowerCase();
+
     pedidos.filter(p =>
       (!filtroFecha || p.fecha === filtroFecha) &&
       (!filtroLocal || p.local.toLowerCase().includes(filtroLocal))
     ).forEach(p => {
       const tr = document.createElement("tr");
-      tr.innerHTML = 
+      tr.innerHTML = `
         <td>${p.id}</td>
         <td>${p.fecha}</td>
         <td>${p.hora}</td>
@@ -249,20 +248,23 @@ productos.forEach(p => {
         <td>${p.producto}</td>
         <td>${p.nombre}</td>
         <td>${p.estado}</td>
-        <td>${p.estado !== "Despachado" ? <button onclick="cambiarEstado(${p.id})">${p.estado === "Pendiente" ? "Producción" : "Despachado"}</button> : ""}</td>
-      ;
+        <td>${p.estado !== "Despachado" ? `<button onclick="cambiarEstado(${p.id})">${p.estado === "Pendiente" ? "Producción" : "Despachado"}</button>` : ""}</td>
+      `;
       tbody.appendChild(tr);
     });
- function verificarClave() {
-  const clave = document.getElementById("claveAcceso").value;
-  const claveCorrecta = "crisol";
-        }
+  }
+
+  function verificarClave() {
+    const clave = document.getElementById("claveAcceso").value;
+    const claveCorrecta = "crisol";
+
     if (clave === claveCorrecta) {
       document.getElementById("loginContainer").style.display = "none";
       document.getElementById("contenido").style.display = "block";
     } else {
       alert("❌ Contraseña incorrecta. Intenta nuevamente.");
     }
+  }
 
   window.verificarClave = verificarClave;
 
@@ -303,7 +305,6 @@ productos.forEach(p => {
 
   mostrarPedidos();
 });
-
 </script>
 </body>
 </html>
