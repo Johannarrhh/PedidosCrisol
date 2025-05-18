@@ -238,7 +238,6 @@ const selectProducto = document.getElementById("producto");
   doc.text(`N° Boleta: ${pedido.boleta}`, margenIzquierdo, 235);
   doc.text(`Vendedor(a): ${pedido.vendedor}`, margenIzquierdo, 250);
   doc.text(observacionesDividido, margenIzquierdo, 265);
-
   doc.save(`${pedido.nombre.trim().replaceAll(" ", "_")}_pedido.pdf`);
 }
 
