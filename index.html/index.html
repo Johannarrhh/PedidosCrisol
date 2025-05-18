@@ -258,8 +258,9 @@
 
         const productoDividido = doc.splitTextToSize(`Producto: ${pedido.producto}`, anchoMaximo);
         const decoracionDividido = doc.splitTextToSize(`Decoración: ${pedido.decoracion}`, anchoMaximo);
-        const observacionesDividido = doc.splitTextToSize(`Observación: ${pedido.observaciones || "Ninguna"}, anchoMaximo); 
-        const nombreDividido = doc.splitTextToSize(Nombre: ${pedido.nombre}`, anchoMaximo);
+        const observacionesDividido = doc.splitTextToSize(`Observación: ${pedido.observaciones || "Ninguna"}`, anchoMaximo);
+const nombreDividido = doc.splitTextToSize(`Nombre: ${pedido.nombre}`, anchoMaximo);
+
             doc.text(`${fechaFormateada} - ${pedido.hora}`, margenIzquierdo, 30);
     doc.text(`${pedido.local} - #${pedido.id}`, margenIzquierdo, 45);
     doc.text(productoDividido, margenIzquierdo, 65);
