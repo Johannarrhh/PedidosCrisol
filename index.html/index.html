@@ -300,7 +300,12 @@ const selectProducto = document.getElementById("producto");
   opt.value = `${p.nombre}`;
   opt.textContent = `${p.nombre} - $${p.precio}`;
   selectProducto.appendChild(opt);
+  // Eventos para filtros
+  document.getElementById("filtroFecha").addEventListener("change", mostrarPedidos);
+  document.getElementById("filtroLocal").addEventListener("input", mostrarPedidos);
+
+  // Mostrar pedidos al cargar la página
+  mostrarPedidos();
 });
- </script>
-</body>
-</html>
+</script> </body> </html> ```
+
