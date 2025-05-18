@@ -201,23 +201,31 @@
           pedidos = pedidos.filter(p => p.local.toUpperCase().includes(filtroLocal));
         }
 
-        pedidos.forEach(pedido => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${pedido.id}</td>
-            <td>${pedido.fecha}</td>
-            <td>${pedido.hora}</td>
-            <td>${pedido.local}</td>
-            <td>${pedido.producto}</td>
-            <td>${pedido.nombre}</td>
-            <td>${pedido.estado}</td>
-            <td><button onclick="cambiarEstado(${pedido.id})">Cambiar Estado</button></td>
-          `;
-          tabla.appendChild(tr);
-        });
-      }
+     pedidos.forEach(pedido => {
+  const tr = document.createElement("tr");
 
-      // Cambiar estado del pedido
+  tr.innerHTML = `
+    <td>${pedido.id}</td>
+    <td>${pedido.fecha}</td>
+    <td>${pedido.hora}</td>
+    <td>${pedido.local}</td>
+    <td>${pedido.producto}</td>
+    <td>${pedido.nombre}</td>
+    <td>${pedido.estado}</td>
+    <td><button class="btn-cambiar-estado" data-id="${pedido.id}">Cambiar Estado</button></td>
+  `;
+
+  tabla.appendChild(tr);
+});
+
+// Agregar event listeners a los botones
+document.querySelectorAll(".btn-cambiar-estado").forEach(btn => {
+  btn.addEventListener("click", e => {
+    const id = Number(e.target.dataset.id);
+    cambiarEstado(id);
+  });
+});
+   // Cambiar estado del pedido
       window.cambiarEstado = function(id) {
         let pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
         const idx = pedidos.findIndex(p => p.id === id);
