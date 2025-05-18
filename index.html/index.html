@@ -176,8 +176,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.getElementById("pedidoForm").addEventListener("submit", function(e) {
     e.preventDefault();
+
+    // ID correlativo
+    let ultimoId = parseInt(localStorage.getItem("ultimoId")) || 0;
+    ultimoId += 1;
+    localStorage.setItem("ultimoId", ultimoId);
+
     const pedido = {
-      id: Date.now(),
+      id: ultimoId,
       fecha: document.getElementById("fecha").value,
       hora: document.getElementById("hora").value,
       local: document.getElementById("local").value,
@@ -191,6 +197,7 @@ document.addEventListener("DOMContentLoaded", function () {
       observaciones: document.getElementById("observaciones").value,
       estado: "Pendiente"
     };
+
     const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
     pedidos.push(pedido);
     localStorage.setItem("pedidos", JSON.stringify(pedidos));
