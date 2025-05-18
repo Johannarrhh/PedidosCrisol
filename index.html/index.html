@@ -59,12 +59,12 @@
       display: flex;
       gap: 10px;
       margin: 10px 0;
+      flex-wrap: wrap;
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
-
 </head>
 <body>
   <div style="text-align: center;">
@@ -84,7 +84,7 @@
       <option value="NOGUEIRA">NOGUEIRA</option>
       <option value="STA MARIA">STA MARIA</option>
       <option value="FABRICA">FABRICA</option>
-   </select>
+    </select>
     <label for="producto">Producto:</label>
     <select id="producto" name="producto" required></select>
     <label for="dedicatoria">Dedicatoria:</label>
@@ -109,203 +109,186 @@
     <input type="date" id="filtroFecha">
     <input type="text" id="filtroLocal" placeholder="Filtrar por local">
     <button onclick="exportarExcel()">Exportar Excel</button>
+    <button onclick="descargarPDF()">Exportar PDF</button>
   </div>
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Fecha</th>
-        <th>Hora</th>
-        <th>Local</th>
-        <th>Producto</th>
-        <th>Cliente</th>
-        <th>Estado</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody id="tablaPedidos"></tbody>
-  </table>
 
- <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const producto = [
-      { codigo: "2120", nombre: "3 LECHES 20P", precio: 18000 },
-      { codigo: "2118", nombre: "AMAPOLA 20P", precio: 20000 },
-      { codigo: "2010", nombre: "AMOR 20P", precio: 28000 },
-      { codigo: "2008", nombre: "BISCOCHO PURE LUCUMA 20P", precio: 20000 },
-      { codigo: "2015", nombre: "CHOCOLATE 20P", precio: 20000 },
-      { codigo: "2017", nombre: "CHOCOLATE GUINDA ACIDA 20P", precio: 21000 },
-      { codigo: "1046", nombre: "DISCO MERENGUE 20P", precio: 2000 },
-      { codigo: "2016", nombre: "DURAZNO CHANTILLY 20P", precio: 20000 },
-      { codigo: "2024", nombre: "FRAMBUESA NATURAL 0% AZUCAR 20P", precio: 21000 },
-      { codigo: "2116", nombre: "FRAMBUESA NATURAL 20P", precio: 21000 },
-      { codigo: "2006", nombre: "HELADA MERENGUE FRAMBUESA 20P", precio: 24000 },
-      { codigo: "2066", nombre: "IMPERIAL BISCOCHO BLANCO 20P", precio: 21000 },
-      { codigo: "2014", nombre: "MANJAR NUEZ 20P", precio: 21000 },
-      { codigo: "2011", nombre: "MANJAR PLATANO 20P", precio: 18000 },
-      { codigo: "2036", nombre: "MARGARITA 20P", precio: 26000 },
-      { codigo: "2003", nombre: "MIL HOJAS 20P", precio: 26000 },
-      { codigo: "2009", nombre: "MOKA 20P", precio: 18000 },
-      { codigo: "1452", nombre: "MOROCHA 20P", precio: 18000 },
-      { codigo: "2039", nombre: "MUSELINA 20P", precio: 18000 },
-      { codigo: "2018", nombre: "PANQUEQUE CASTAÑA 20P", precio: 25000 },
-      { codigo: "2005", nombre: "PANQUEQUE NARANJA 20P", precio: 24000 },
-      { codigo: "2001", nombre: "PIÑA 20P", precio: 21000 },
-      { codigo: "2044", nombre: "SACHER 20P", precio: 28000 },
-      { codigo: "2002", nombre: "SELVA NEGRA 20P", precio: 25000 },
-      { codigo: "2115", nombre: "TRUFA 20P", precio: 24000 },
-      { codigo: "2035", nombre: "YOGURTH 20P", precio: 16000 }
-    ];
-  function descargarPDF() {
-    const elemento = document.getElementById("historialPedidos"); // ID de tu tabla o div
+  <div id="historialPedidos">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Local</th>
+          <th>Producto</th>
+          <th>Cliente</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="tablaPedidos"></tbody>
+    </table>
+  </div>
 
-    const opciones = {
-      margin:       0.5,
-      filename:     'historial_pedidos.pdf',
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const productos = [
+                { codigo: "2120", nombre: "3 LECHES 20P", precio: 18000 },
+        { codigo: "2118", nombre: "AMAPOLA 20P", precio: 20000 },
+        { codigo: "2010", nombre: "AMOR 20P", precio: 28000 },
+        { codigo: "2008", nombre: "BISCOCHO PURE LUCUMA 20P", precio: 20000 },
+        { codigo: "2015", nombre: "CHOCOLATE 20P", precio: 20000 },
+        { codigo: "2017", nombre: "CHOCOLATE GUINDA ACIDA 20P", precio: 21000 },
+        { codigo: "1046", nombre: "DISCO MERENGUE 20P", precio: 2000 },
+        { codigo: "2016", nombre: "DURAZNO CHANTILLY 20P", precio: 20000 },
+        { codigo: "2024", nombre: "FRAMBUESA NATURAL 0% AZUCAR 20P", precio: 21000 },
+        { codigo: "2116", nombre: "FRAMBUESA NATURAL 20P", precio: 21000 },
+        { codigo: "2006", nombre: "HELADA MERENGUE FRAMBUESA 20P", precio: 24000 },
+        { codigo: "2066", nombre: "IMPERIAL BISCOCHO BLANCO 20P", precio: 21000 },
+        { codigo: "2014", nombre: "MANJAR NUEZ 20P", precio: 21000 },
+        { codigo: "2011", nombre: "MANJAR PLATANO 20P", precio: 18000 },
+        { codigo: "2036", nombre: "MARGARITA 20P", precio: 26000 },
+        { codigo: "2003", nombre: "MIL HOJAS 20P", precio: 26000 },
+        { codigo: "2009", nombre: "MOKA 20P", precio: 18000 },
+        { codigo: "1452", nombre: "MOROCHA 20P", precio: 18000 },
+        { codigo: "2039", nombre: "MUSELINA 20P", precio: 18000 },
+        { codigo: "2018", nombre: "PANQUEQUE CASTAÑA 20P", precio: 25000 },
+        { codigo: "2005", nombre: "PANQUEQUE NARANJA 20P", precio: 24000 },
+        { codigo: "2001", nombre: "PIÑA 20P", precio: 21000 },
+        { codigo: "2044", nombre: "SACHER 20P", precio: 28000 },
+        { codigo: "2002", nombre: "SELVA NEGRA 20P", precio: 25000 },
+        { codigo: "2115", nombre: "TRUFA 20P", precio: 24000 },
+        { codigo: "2035", nombre: "YOGURTH 20P", precio: 16000 }
 
-    html2pdf().from(elemento).set(opciones).save();
-  }
-const selectProducto = document.getElementById("producto");
+      ];
 
-  producto.forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = p.nombre;
-      opt.textContent = `${p.nombre} - $${p.precio}`;
-      selectProducto.appendChild(opt);
-    });
-    document.getElementById("pedidoForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const pedido = {
-        id: Date.now(),
-        fecha: document.getElementById("fecha").value,
-        hora: document.getElementById("hora").value,
-        local: document.getElementById("local").value,
-        producto: document.getElementById("producto").value,
-        dedicatoria: document.getElementById("dedicatoria").value,
-        decoracion: document.getElementById("decoracion").value,
-        boleta: document.getElementById("boleta").value,
-        nombre: document.getElementById("nombre").value,
-        telefono: document.getElementById("telefono").value,
-        vendedor: document.getElementById("vendedor").value,
-        observaciones: document.getElementById("observaciones").value,
-        estado: "Pendiente"
+      const selectProducto = document.getElementById("producto");
+      productos.forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p.nombre;
+        opt.textContent = `${p.nombre} - $${p.precio}`;
+        selectProducto.appendChild(opt);
+      });
+
+      document.getElementById("pedidoForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const pedido = {
+          id: Date.now(),
+          fecha: document.getElementById("fecha").value,
+          hora: document.getElementById("hora").value,
+          local: document.getElementById("local").value,
+          producto: document.getElementById("producto").value,
+          dedicatoria: document.getElementById("dedicatoria").value,
+          decoracion: document.getElementById("decoracion").value,
+          boleta: document.getElementById("boleta").value,
+          nombre: document.getElementById("nombre").value,
+          telefono: document.getElementById("telefono").value,
+          vendedor: document.getElementById("vendedor").value,
+          observaciones: document.getElementById("observaciones").value,
+          estado: "Pendiente"
+        };
+        const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
+        pedidos.push(pedido);
+        localStorage.setItem("pedidos", JSON.stringify(pedidos));
+        generarPDF(pedido);
+        mostrarPedidos();
+        alert("✅ Pedido guardado y PDF descargado.");
+        this.reset();
+      });
+
+      function generarPDF(pedido) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const fechaObj = new Date(pedido.fecha);
+        const meses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
+        const dia = fechaObj.getDate().toString().padStart(2, '0');
+        const mes = meses[fechaObj.getMonth()];
+        const año = fechaObj.getFullYear();
+        const fechaFormateada = `${dia}-${mes}-${año}`;
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(40);
+        const margen = 10;
+        const maxAncho = 180;
+
+        doc.text(`${fechaFormateada} - ${pedido.hora}`, margen, 30);
+        doc.text(`${pedido.local} - #${pedido.id}`, margen, 45);
+        doc.text(doc.splitTextToSize(`Producto: ${pedido.producto}`, maxAncho), margen, 65);
+        doc.text(`Motivo: ${pedido.dedicatoria}`, margen, 120);
+        doc.text(doc.splitTextToSize(`Decoración: ${pedido.decoracion}`, maxAncho), margen, 150);
+        doc.text(doc.splitTextToSize(`Nombre: ${pedido.nombre}`, maxAncho), margen, 190);
+        doc.text(`Teléfono: ${pedido.telefono}`, margen, 220);
+        doc.text(`N° Boleta: ${pedido.boleta}`, margen, 235);
+        doc.text(`Vendedor(a): ${pedido.vendedor}`, margen, 250);
+        doc.text(doc.splitTextToSize(`Observación: ${pedido.observaciones || "Ninguna"}`, maxAncho), margen, 265);
+        doc.save(`${pedido.nombre.trim().replaceAll(" ", "_")}_pedido.pdf`);
+      }
+
+      function mostrarPedidos() {
+        const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
+        const tbody = document.getElementById("tablaPedidos");
+        tbody.innerHTML = "";
+        const filtroFecha = document.getElementById("filtroFecha").value;
+        const filtroLocal = document.getElementById("filtroLocal").value.toLowerCase();
+
+        pedidos.filter(p =>
+          (!filtroFecha || p.fecha === filtroFecha) &&
+          (!filtroLocal || p.local.toLowerCase().includes(filtroLocal))
+        ).forEach(p => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${p.id}</td>
+            <td>${p.fecha}</td>
+            <td>${p.hora}</td>
+            <td>${p.local}</td>
+            <td>${p.producto}</td>
+            <td>${p.nombre}</td>
+            <td>${p.estado}</td>
+            <td>${p.estado !== "Despachado" ? `<button onclick="cambiarEstado(${p.id})">${p.estado === "Pendiente" ? "Producción" : "Despachado"}</button>` : ""}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      window.cambiarEstado = function(id) {
+        const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
+        const actualizados = pedidos.map(p => {
+          if (p.id === id) {
+            p.estado = p.estado === "Pendiente" ? "Producción" : "Despachado";
+          }
+          return p;
+        });
+        localStorage.setItem("pedidos", JSON.stringify(actualizados));
+        mostrarPedidos();
       };
 
-      const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
-      pedidos.push(pedido);
-      localStorage.setItem("pedidos", JSON.stringify(pedidos));
-      generarPDF(pedido);
+      window.exportarExcel = function() {
+        const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
+        const worksheet = XLSX.utils.json_to_sheet(pedidos);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
+        XLSX.writeFile(workbook, "pedidos_crisol.xlsx");
+      };
+
+      window.descargarPDF = function() {
+        const elemento = document.getElementById("historialPedidos");
+        const opciones = {
+          margin: 0.5,
+          filename: 'historial_pedidos.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().from(elemento).set(opciones).save();
+      };
+
+      document.getElementById("filtroFecha").addEventListener("input", mostrarPedidos);
+      document.getElementById("filtroLocal").addEventListener("input", mostrarPedidos);
+
       mostrarPedidos();
-      alert("✅ Pedido guardado y PDF descargado.");
-      this.reset();
     });
+  </script>
+</body>
+</html>
 
- function generarPDF(pedido) {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  const fechaInput = pedido.fecha;
-  const fechaObj = new Date(fechaInput);
-  const meses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
-
-  const dia = fechaObj.getDate().toString().padStart(2, '0');
-  const mesNombre = meses[fechaObj.getMonth()];
-  const año = fechaObj.getFullYear();
-
-  const fechaFormateada = `${dia}-${mesNombre}-${año}`;
-
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(40);
-
-  const margenIzquierdo = 10;
-  const anchoMaximo = 180;
-
-  const productoDividido = doc.splitTextToSize(`Producto: ${pedido.producto}`, anchoMaximo);
-  const decoracionDividido = doc.splitTextToSize(`Decoración: ${pedido.decoracion}`, anchoMaximo);
-  const observacionesDividido = doc.splitTextToSize(`Observación: ${pedido.observaciones || "Ninguna"}`, anchoMaximo);
-  const nombreDividido = doc.splitTextToSize(`Nombre: ${pedido.nombre}`, anchoMaximo);
-
-  doc.text(`${fechaFormateada} - ${pedido.hora}`, margenIzquierdo, 30);
-  doc.text(`${pedido.local} - #${pedido.id}`, margenIzquierdo, 45);
-  doc.text(productoDividido, margenIzquierdo, 65);
-  doc.text(`Motivo: ${pedido.dedicatoria}`, margenIzquierdo, 120);
-  doc.text(decoracionDividido, margenIzquierdo, 150);
-  doc.text(nombreDividido, margenIzquierdo, 190);
-  doc.text(`Teléfono: ${pedido.telefono}`, margenIzquierdo, 220);
-  doc.text(`N° Boleta: ${pedido.boleta}`, margenIzquierdo, 235);
-  doc.text(`Vendedor(a): ${pedido.vendedor}`, margenIzquierdo, 250);
-  doc.text(observacionesDividido, margenIzquierdo, 265);
-  doc.save(`${pedido.nombre.trim().replaceAll(" ", "_")}_pedido.pdf`);
-}
-
-
-    function mostrarPedidos() {
-      const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
-      const tbody = document.getElementById("tablaPedidos");
-      tbody.innerHTML = "";
-
-      const filtroFecha = document.getElementById("filtroFecha").value;
-      const filtroLocal = document.getElementById("filtroLocal").value.toLowerCase();
-
-      const filtrados = pedidos.filter(p =>
-        (!filtroFecha || p.fecha === filtroFecha) &&
-        (!filtroLocal || p.local.toLowerCase().includes(filtroLocal))
-      );
-
-      filtrados.forEach(p => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${p.id}</td>
-          <td>${p.fecha}</td>
-          <td>${p.hora}</td>
-          <td>${p.local}</td>
-          <td>${p.producto}</td>
-          <td>${p.nombre}</td>
-          <td>${p.estado}</td>
-          <td>${p.estado !== "Despachado" ? `<button onclick="cambiarEstado(${p.id})">${p.estado === "Pendiente" ? "Producción" : "Despachado"}</button>` : ""}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function cambiarEstado(id) {
-      const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
-      const actualizado = pedidos.map(p => {
-        if (p.id === id) {
-          p.estado = p.estado === "Pendiente" ? "Producción" : "Despachado";
-        }
-        return p;
-      });
-      localStorage.setItem("pedidos", JSON.stringify(actualizado));
-      mostrarPedidos();
-    }
-
-    function exportarExcel() {
-      const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
-      const worksheet = XLSX.utils.json_to_sheet(pedidos);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
-      XLSX.writeFile(workbook, "pedidos_crisol.xlsx");
-    }
-
-    document.getElementById("filtroFecha").addEventListener("input", mostrarPedidos);
-    document.getElementById("filtroLocal").addEventListener("input", mostrarPedidos);
-
-    mostrarPedidos();
-     }
- productos.forEach(p => {
-  const opt = document.createElement("option");
-  opt.value = `${p.nombre}`;
-  opt.textContent = `${p.nombre} - $${p.precio}`;
-  selectProducto.appendChild(opt);
-  // Eventos para filtros
-  document.getElementById("filtroFecha").addEventListener("change", mostrarPedidos);
-  document.getElementById("filtroLocal").addEventListener("input", mostrarPedidos);
-    
-  mostrarPedidos();
-      });
-</script> </body> </html> ```
 
