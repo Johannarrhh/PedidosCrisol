@@ -239,7 +239,6 @@
   function verificarClave() {
     const clave = document.getElementById("claveAcceso").value;
     const claveCorrecta = "crisol";
-      }
       // Puedes cambiarla por la clave que tú elijas
 
     if (clave === claveCorrecta) {
@@ -248,6 +247,7 @@
     } else {
       alert("❌ Contraseña incorrecta. Intenta nuevamente.");
     }
+       }
   pedidos.filter(p =>
           (!filtroFecha || p.fecha === filtroFecha) &&
           (!filtroLocal || p.local.toLowerCase().includes(filtroLocal))
