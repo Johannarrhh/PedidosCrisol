@@ -134,8 +134,8 @@
       <tbody id="tablaPedidos"></tbody>
     </table>
   </div>
- <script>
-document.addEventListener("DOMContentLoaded", function() {
+<script>
+document.addEventListener("DOMContentLoaded", function () {
   const productos = [
     { codigo: "2120", nombre: "3 LECHES 20P", precio: 18000 },
     { codigo: "2118", nombre: "AMAPOLA 20P", precio: 20000 },
@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
     { codigo: "2044", nombre: "SACHER 20P", precio: 28000 },
     { codigo: "2002", nombre: "SELVA NEGRA 20P", precio: 25000 },
     { codigo: "2115", nombre: "TRUFA 20P", precio: 24000 },
-    { codigo: "2035", nombre: "YOGURTH 20P", precio: 16000 }
+    { codigo: "2035", nombre: "YOGURTH 20P", precio: 16000 },
   ];
 
   const selectProducto = document.getElementById("producto");
@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function() {
     selectProducto.appendChild(opt);
   });
 
-  document.getElementById("pedidoForm").addEventListener("submit", function(e) {
+  document.getElementById("pedidoForm").addEventListener("submit", function (e) {
     e.preventDefault();
     const pedido = {
       id: Date.now(),
@@ -231,40 +231,46 @@ document.addEventListener("DOMContentLoaded", function() {
     const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
     const tbody = document.getElementById("tablaPedidos");
     tbody.innerHTML = "";
+
     const filtroFecha = document.getElementById("filtroFecha").value;
-   const filtroLocal = document.getElementById("filtroLocal").value.toLowerCase();
-}
-    pedidos.filter(p =>
-      (!filtroFecha || p.fecha === filtroFecha) &&
-      (!filtroLocal || p.local.toLowerCase().includes(filtroLocal))
-    ).forEach(p => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${p.id}</td>
-        <td>${p.fecha}</td>
-        <td>${p.hora}</td>
-        <td>${p.local}</td>
-        <td>${p.producto}</td>
-        <td>${p.nombre}</td>
-        <td>${p.estado}</td>
-        <td>${p.estado !== "Despachado" ? `<button onclick="cambiarEstado(${p.id})">${p.estado === "Pendiente" ? "Producción" : "Despachado"}</button>` : ""}</td>
-      `;
-      tbody.appendChild(tr);
-    });
- function verificarClave() {
-  const clave = document.getElementById("claveAcceso").value;
-  const claveCorrecta = "crisol";
-        }
+    const filtroLocal = document.getElementById("filtroLocal").value.toLowerCase();
+
+    pedidos
+      .filter(p =>
+        (!filtroFecha || p.fecha === filtroFecha) &&
+        (!filtroLocal || p.local.toLowerCase().includes(filtroLocal))
+      )
+      .forEach(p => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${p.id}</td>
+          <td>${p.fecha}</td>
+          <td>${p.hora}</td>
+          <td>${p.local}</td>
+          <td>${p.producto}</td>
+          <td>${p.nombre}</td>
+          <td>${p.estado}</td>
+          <td>${p.estado !== "Despachado" ? `<button onclick="cambiarEstado(${p.id})">${p.estado === "Pendiente" ? "Producción" : "Despachado"}</button>` : ""}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+  }
+
+  function verificarClave() {
+    const clave = document.getElementById("claveAcceso").value;
+    const claveCorrecta = "crisol";
+
     if (clave === claveCorrecta) {
       document.getElementById("loginContainer").style.display = "none";
       document.getElementById("contenido").style.display = "block";
     } else {
       alert("❌ Contraseña incorrecta. Intenta nuevamente.");
     }
+  }
 
   window.verificarClave = verificarClave;
 
-  window.cambiarEstado = function(id) {
+  window.cambiarEstado = function (id) {
     const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
     const actualizados = pedidos.map(p => {
       if (p.id === id) {
@@ -276,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function() {
     mostrarPedidos();
   };
 
-  window.exportarExcel = function() {
+  window.exportarExcel = function () {
     const pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
     const worksheet = XLSX.utils.json_to_sheet(pedidos);
     const workbook = XLSX.utils.book_new();
@@ -284,7 +290,7 @@ document.addEventListener("DOMContentLoaded", function() {
     XLSX.writeFile(workbook, "pedidos_crisol.xlsx");
   };
 
-  window.descargarPDF = function() {
+  window.descargarPDF = function () {
     const elemento = document.getElementById("historialPedidos");
     const opciones = {
       margin: 0.5,
@@ -302,5 +308,5 @@ document.addEventListener("DOMContentLoaded", function() {
   mostrarPedidos();
 });
 </script>
-  </body>
+</body>
 </html>
