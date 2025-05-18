@@ -184,7 +184,7 @@
         selectProducto.appendChild(option);
       });
 
-      // Función para mostrar pedidos en la tabla
+      // Mostrar pedidos con filtros
       function mostrarPedidos() {
         const tabla = document.getElementById("tablaPedidos");
         tabla.innerHTML = "";
@@ -201,31 +201,31 @@
           pedidos = pedidos.filter(p => p.local.toUpperCase().includes(filtroLocal));
         }
 
-     pedidos.forEach(pedido => {
-  const tr = document.createElement("tr");
+        pedidos.forEach(pedido => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${pedido.id}</td>
+            <td>${pedido.fecha}</td>
+            <td>${pedido.hora}</td>
+            <td>${pedido.local}</td>
+            <td>${pedido.producto}</td>
+            <td>${pedido.nombre}</td>
+            <td>${pedido.estado}</td>
+            <td><button class="btn-cambiar-estado" data-id="${pedido.id}">Cambiar Estado</button></td>
+          `;
+          tabla.appendChild(tr);
+        });
 
-  tr.innerHTML = `
-    <td>${pedido.id}</td>
-    <td>${pedido.fecha}</td>
-    <td>${pedido.hora}</td>
-    <td>${pedido.local}</td>
-    <td>${pedido.producto}</td>
-    <td>${pedido.nombre}</td>
-    <td>${pedido.estado}</td>
-    <td><button class="btn-cambiar-estado" data-id="${pedido.id}">Cambiar Estado</button></td>
-  `;
+        // Agregar evento a botones para cambiar estado
+        document.querySelectorAll(".btn-cambiar-estado").forEach(btn => {
+          btn.addEventListener("click", e => {
+            const id = Number(e.target.dataset.id);
+            cambiarEstado(id);
+          });
+        });
+      }
 
-  tabla.appendChild(tr);
-});
-
-// Agregar event listeners a los botones
-document.querySelectorAll(".btn-cambiar-estado").forEach(btn => {
-  btn.addEventListener("click", e => {
-    const id = Number(e.target.dataset.id);
-    cambiarEstado(id);
-  });
-});
-   // Cambiar estado del pedido
+      // Cambiar estado del pedido
       window.cambiarEstado = function(id) {
         let pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
         const idx = pedidos.findIndex(p => p.id === id);
@@ -250,102 +250,93 @@ document.querySelectorAll(".btn-cambiar-estado").forEach(btn => {
         const año = fechaObj.getFullYear();
         const fechaFormateada = `${dia}-${mes}-${año}`;
 
-           doc.setFont("helvetica", "bold");
-  doc.setFontSize(40);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(40);
 
-  const margenIzquierdo = 10;
-  const anchoMaximo = 180;
+        const margenIzquierdo = 10;
+        const anchoMaximo = 180;
 
-  const productoDividido = doc.splitTextToSize(`Producto: ${pedido.producto}`, anchoMaximo);
-  const decoracionDividido = doc.splitTextToSize(`Decoración: ${pedido.decoracion}`, anchoMaximo);
-  const observacionesDividido = doc.splitTextToSize(`Observación: ${pedido.observaciones || "Ninguna"}`, anchoMaximo);
-  const nombreDividido = doc.splitTextToSize(`Nombre: ${pedido.nombre}`, anchoMaximo);
+        const productoDividido = doc.splitTextToSize(`Producto: ${pedido.producto}`, anchoMaximo);
+        const decoracionDividido = doc.splitTextToSize(`Decoración: ${pedido.decoracion}`, anchoMaximo);
+        const observacionesDividido = doc.splitTextToSize(`Observación: ${pedido.observaciones || "Ninguna"}, anchoMaximo); 
+        const nombreDividido = doc.splitTextToSize(Nombre: ${pedido.nombre}`, anchoMaximo);
+            doc.text(`${fechaFormateada} - ${pedido.hora}`, margenIzquierdo, 30);
+    doc.text(`${pedido.local} - #${pedido.id}`, margenIzquierdo, 45);
+    doc.text(productoDividido, margenIzquierdo, 65);
+    doc.text(`Motivo: ${pedido.dedicatoria}`, margenIzquierdo, 120);
+    doc.text(decoracionDividido, margenIzquierdo, 150);
+    doc.text(nombreDividido, margenIzquierdo, 190);
+    doc.text(`Teléfono: ${pedido.telefono}`, margenIzquierdo, 220);
+    doc.text(`N° Boleta: ${pedido.boleta}`, margenIzquierdo, 235);
+    doc.text(`Vendedor(a): ${pedido.vendedor}`, margenIzquierdo, 250);
+    doc.text(observacionesDividido, margenIzquierdo, 265);
 
-  doc.text(`${fechaFormateada} - ${pedido.hora}`, margenIzquierdo, 30);
-  doc.text(`${pedido.local} - #${pedido.id}`, margenIzquierdo, 45);
-  doc.text(productoDividido, margenIzquierdo, 65);
-  doc.text(`Motivo: ${pedido.dedicatoria}`, margenIzquierdo, 120);
-  doc.text(decoracionDividido, margenIzquierdo, 150);
-  doc.text(nombreDividido, margenIzquierdo, 190);
-  doc.text(`Teléfono: ${pedido.telefono}`, margenIzquierdo, 220);
-  doc.text(`N° Boleta: ${pedido.boleta}`, margenIzquierdo, 235);
-  doc.text(`Vendedor(a): ${pedido.vendedor}`, margenIzquierdo, 250);
-  doc.text(observacionesDividido, margenIzquierdo, 265);
-  doc.save(`${pedido.nombre.trim().replaceAll(" ", "_")}_pedido.pdf`);
-
+    const nombreArchivo = pedido.nombre.trim().replaceAll(" ", "_");
+    doc.save(`${nombreArchivo}_pedido.pdf`);
   }
 
-  // Guardar pedido desde el formulario
-  const form = document.getElementById("pedidoForm");
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-
-    const nuevoPedido = {
-      id: Date.now(),
-      fecha: form.fecha.value,
-      hora: form.hora.value,
-      local: form.local.value,
-      producto: form.producto.value,
-      dedicatoria: form.dedicatoria.value.trim(),
-      decoracion: form.decoracion.value.trim(),
-      boleta: form.boleta.value.trim(),
-      nombre: form.nombre.value.trim(),
-      telefono: form.telefono.value.trim(),
-      vendedor: form.vendedor.value.trim(),
-      observaciones: form.observaciones.value.trim(),
-      estado: "Pendiente"
-    };
-
-    // Guardar en localStorage
-    let pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
-    pedidos.push(nuevoPedido);
-    localStorage.setItem("pedidos", JSON.stringify(pedidos));
-
-    generarPDF(nuevoPedido);
-
-    form.reset();
-    mostrarPedidos();
-  });
-
-  // Función para exportar a Excel usando SheetJS
+  // Exportar Excel con XLSX
   window.exportarExcel = function() {
     let pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
-    if (pedidos.length === 0) {
+    if(pedidos.length === 0){
       alert("No hay pedidos para exportar.");
       return;
     }
-
-    // Aplicar filtros antes de exportar
-    const filtroFecha = document.getElementById("filtroFecha").value;
-    const filtroLocal = document.getElementById("filtroLocal").value.trim().toUpperCase();
-
-    if (filtroFecha) {
-      pedidos = pedidos.filter(p => p.fecha === filtroFecha);
-    }
-    if (filtroLocal) {
-      pedidos = pedidos.filter(p => p.local.toUpperCase().includes(filtroLocal));
-    }
-
-    const wb = XLSX.utils.book_new();
     const ws_data = [
-      ["ID", "Fecha", "Hora", "Local", "Producto", "Dedicatoria", "Decoración", "Boleta", "Cliente", "Teléfono", "Vendedor", "Observaciones", "Estado"]
+      ["ID","Fecha","Hora","Local","Producto","Dedicatoria","Decoración","Boleta","Cliente","Teléfono","Vendedor","Observaciones","Estado"]
     ];
     pedidos.forEach(p => {
       ws_data.push([
-        p.id, p.fecha, p.hora, p.local, p.producto, p.dedicatoria, p.decoracion, p.boleta,
-        p.nombre, p.telefono, p.vendedor, p.observaciones || "", p.estado
+        p.id, p.fecha, p.hora, p.local, p.producto, p.dedicatoria, p.decoracion,
+        p.boleta, p.nombre, p.telefono, p.vendedor, p.observaciones || "", p.estado
       ]);
     });
+    const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
     XLSX.utils.book_append_sheet(wb, ws, "Pedidos");
     XLSX.writeFile(wb, "Pedidos_Crisol.xlsx");
   };
 
-  // Eventos para filtros
+  // Guardar pedido
+  document.getElementById("pedidoForm").addEventListener("submit", e => {
+    e.preventDefault();
+    let pedidos = JSON.parse(localStorage.getItem("pedidos") || "[]");
+
+    // Generar id incremental
+    let maxId = pedidos.length > 0 ? Math.max(...pedidos.map(p => p.id)) : 0;
+    const nuevoId = maxId + 1;
+
+    const nuevoPedido = {
+      id: nuevoId,
+      fecha: document.getElementById("fecha").value,
+      hora: document.getElementById("hora").value,
+      local: document.getElementById("local").value,
+      producto: document.getElementById("producto").value,
+      dedicatoria: document.getElementById("dedicatoria").value,
+      decoracion: document.getElementById("decoracion").value,
+      boleta: document.getElementById("boleta").value,
+      nombre: document.getElementById("nombre").value,
+      telefono: document.getElementById("telefono").value,
+      vendedor: document.getElementById("vendedor").value,
+      observaciones: document.getElementById("observaciones").value,
+      estado: "Pendiente"
+    };
+
+    pedidos.push(nuevoPedido);
+    localStorage.setItem("pedidos", JSON.stringify(pedidos));
+
+    generarPDF(nuevoPedido);
+
+    // Limpiar formulario
+    e.target.reset();
+
+    mostrarPedidos();
+  });
+
+  // Actualizar listado al cambiar filtros
   document.getElementById("filtroFecha").addEventListener("change", mostrarPedidos);
   document.getElementById("filtroLocal").addEventListener("input", mostrarPedidos);
 
-  // Mostrar pedidos al cargar la página
   mostrarPedidos();
 });
 </script> </body> </html> ```
