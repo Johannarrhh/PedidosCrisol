@@ -295,7 +295,8 @@ const selectProducto = document.getElementById("producto");
     document.getElementById("filtroLocal").addEventListener("input", mostrarPedidos);
 
     mostrarPedidos();
-    productos.forEach(p => {
+     }
+ productos.forEach(p => {
   const opt = document.createElement("option");
   opt.value = `${p.nombre}`;
   opt.textContent = `${p.nombre} - $${p.precio}`;
