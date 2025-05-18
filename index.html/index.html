@@ -177,8 +177,6 @@ const selectProducto = document.getElementById("producto");
       opt.textContent = `${p.nombre} - $${p.precio}`;
       selectProducto.appendChild(opt);
     });
-</script>
-
     document.getElementById("pedidoForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const pedido = {
